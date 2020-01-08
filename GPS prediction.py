@@ -24,20 +24,17 @@ from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import GridSearchCV
 warnings.filterwarnings("ignore")
 
-
+# Read in the training data and do intial preprocessing of dropping a seperate ID row and splitting SegmentID and time.
 train_data=pd.read_csv("training_data.csv")
-df=train_data["SegmentId_Time"].str.split('_',expand=True)
-df.columns=['SegmentId','Time']
-train_data=pd.concat([train_data,df],axis=1)
+train_data[['SegmentId','Time']]=train_data["SegmentId_Time"].str.split('_',expand=True)
 train_data.drop(columns=['Id','SegmentId_Time'],axis=1,inplace=True)
 
+# We process the test_data in the same way as the training data
 test_data=pd.read_csv("flight_testFeatures_toPredict.csv")
-df=test_data["SegmentId_Time"].str.split('_',expand=True)
-df.columns=['SegmentId','Time']
-test_data=pd.concat([test_data,df],axis=1)
+test_data[['SegmentId','Time']]=test_data["SegmentId_Time"].str.split('_',expand=True)
 test_data.drop(columns=['Id','SegmentId_Time'],axis=1,inplace=True)
 
-
+# Dropping SegmentID and time to test 
 X_train=train_data.drop(['SegmentId','Time','Altitude','Latitude','Longitude'],axis=1)
 Y_train=pd.DataFrame(train_data[['Altitude','Latitude','Longitude']])
 X_test=test_data.drop(['SegmentId','Time','Altitude','Latitude','Longitude'],axis=1)
